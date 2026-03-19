@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  web:
+    image: node:20
+    command: ["bash", "-lc", "echo Web placeholder"]
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "3000:3000"
+
+  api:
+    image: python:3.12
+    command: ["bash", "-lc", "echo API placeholder"]
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "8000:8000"
+
+  worker:
+    image: python:3.12
+    command: ["bash", "-lc", "echo Worker placeholder"]
+    working_dir: /app
+    volumes:
+      - ./:/app
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: training_plan_platform
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
