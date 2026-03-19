@@ -37,9 +37,10 @@ Fehler werden standardisiert zurückgegeben.
 
 ## Wichtige Endpunkte
 - `POST /api/v1/auth/login`
+- `GET /api/v1/auth/me`
 - `GET /api/v1/health`
 - `POST /api/v1/sources`
-- `GET /api/v1/sources`
+- `GET /api/v1/sources` (optional Filter: `source_status`, `source_type`)
 - `GET /api/v1/sources/{sourceId}`
 - `POST /api/v1/sources/{sourceId}/reprocess`
 - `GET /api/v1/sessions`

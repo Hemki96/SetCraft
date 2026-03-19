@@ -1,15 +1,10 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
-API_ROOT = Path(__file__).resolve().parents[2] / "services" / "api"
-sys.path.insert(0, str(API_ROOT))
-
+import pytest
 from app.core.config import get_settings
 
 
-def test_settings_use_defaults_when_env_is_missing(monkeypatch) -> None:
+def test_settings_use_defaults_when_env_is_missing(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("APP_NAME", raising=False)
     monkeypatch.delenv("API_VERSION", raising=False)
     monkeypatch.delenv("APP_ENV", raising=False)
@@ -34,7 +29,7 @@ def test_settings_use_defaults_when_env_is_missing(monkeypatch) -> None:
     )
 
 
-def test_settings_read_environment_values(monkeypatch) -> None:
+def test_settings_read_environment_values(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("APP_NAME", "setcraft-api-test")
     monkeypatch.setenv("API_VERSION", "v1")
     monkeypatch.setenv("APP_ENV", "test")
@@ -55,8 +50,11 @@ def test_settings_read_environment_values(monkeypatch) -> None:
     assert settings.database_url == "postgresql+psycopg://setcraft_user:secret@db:5433/setcraft"
 
 
-def test_database_url_prefers_explicit_value(monkeypatch) -> None:
-    monkeypatch.setenv("DATABASE_URL", "postgresql+psycopg://custom:custom@custom-host:5432/custom_db")
+def test_database_url_prefers_explicit_value(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv(
+        "DATABASE_URL",
+        "postgresql+psycopg://custom:custom@custom-host:5432/custom_db",
+    )
 
     get_settings.cache_clear()
     settings = get_settings()

@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import globals from "globals";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 
@@ -10,6 +11,7 @@ export default [
       parser: tsParser,
       ecmaVersion: "latest",
       sourceType: "module",
+      globals: globals.browser,
     },
     plugins: {
       "@typescript-eslint": tsPlugin,
@@ -17,6 +19,7 @@ export default [
     rules: {
       ...tsPlugin.configs.recommended.rules,
       "@typescript-eslint/no-explicit-any": "error",
+      "no-undef": "off",
     },
   },
   {

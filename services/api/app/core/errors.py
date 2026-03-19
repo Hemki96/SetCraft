@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -11,7 +11,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.schemas.error import ErrorResponse
 
 
-class ErrorCode(str, Enum):
+class ErrorCode(StrEnum):
     VALIDATION_ERROR = "VALIDATION_ERROR"
     NOT_FOUND = "NOT_FOUND"
     HTTP_ERROR = "HTTP_ERROR"
@@ -29,6 +29,7 @@ def configure_exception_handlers(app: FastAPI) -> None:
     async def handle_http_exception(
         request: Request, exc: StarletteHTTPException
     ) -> JSONResponse:
+        del request
         code = ErrorCode.NOT_FOUND if exc.status_code == 404 else ErrorCode.HTTP_ERROR
         message = str(exc.detail)
         payload = _build_error_response(code=code, message=message)
@@ -38,6 +39,7 @@ def configure_exception_handlers(app: FastAPI) -> None:
     async def handle_validation_exception(
         request: Request, exc: RequestValidationError
     ) -> JSONResponse:
+        del request
         payload = _build_error_response(
             code=ErrorCode.VALIDATION_ERROR,
             message="Request validation failed",
@@ -46,9 +48,9 @@ def configure_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(status_code=422, content=payload)
 
     @app.exception_handler(Exception)
-    async def handle_unexpected_exception(
-        request: Request, exc: Exception
-    ) -> JSONResponse:
+    async def handle_unexpected_exception(request: Request, exc: Exception) -> JSONResponse:
+        del request
+        del exc
         payload = _build_error_response(
             code=ErrorCode.INTERNAL_ERROR,
             message="Internal server error",

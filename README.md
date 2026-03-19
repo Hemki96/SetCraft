@@ -114,7 +114,9 @@ make lint
 
 ### Dev-Hinweise
 - `make bootstrap` legt `.env` (falls nicht vorhanden) und `.venv` an und installiert Dev-Tools aus `pyproject.toml` (`.[dev]`).
+- Voraussetzung für `make bootstrap`: Python `3.12` (oder `PYTHON_BIN=/pfad/zu/python3.12`).
 - `make dev` startet standardmäßig lokale Infrastruktur (`db`, `redis`) via Docker Compose.
+- Voraussetzung für `make dev`: Docker + Docker Compose.
 - Optional kann Ollama lokal mitgestartet werden:
   ```bash
   ENABLE_OLLAMA=1 make dev
@@ -123,21 +125,50 @@ make lint
   ```bash
   ENABLE_APP_CONTAINERS=1 make dev
   ```
+- Compose-Smoke-Flow:
+  - default: `db` + `redis`
+  - optional: `ollama` via `ENABLE_OLLAMA=1`
+  - optional: `api`, `worker`, `web` via `ENABLE_APP_CONTAINERS=1`
+  - Startreihenfolge wird über `depends_on` und Healthchecks abgesichert.
+
+### Operationalisierungs-Scope (Track-Abgrenzung)
+- In Scope: `Makefile`, `docker-compose.yml`, `infra/scripts/*`, minimale Setup-Doku.
+- Nicht in Scope: fachliche API-, DB-, Worker- oder Frontend-Features.
+- Repo-weite bestehende Lint/Test/Typecheck-Probleme außerhalb dieses Scopes werden separat behandelt.
+
+### Foundation-Verifikation (ohne Feature-Gates)
+```bash
+make verify-foundation
+```
+Dieser Modus prüft nur Operationalisierungs-Grundlagen:
+- Shell-Syntax der Skripte
+- Make-Target-Auflösung (Dry-Run)
+- YAML-Validität von `docker-compose.yml`
+- `docker compose config` Render
 
 ## Wichtigste Kommandos
 
 ```bash
 make bootstrap     # lokale Entwicklungsumgebung vorbereiten
-make dev           # API, Worker und Web lokal starten
+make dev           # lokale Infrastruktur starten (db/redis; optional ai/app profile)
 make test          # gesamte Test-Suite ausführen
 make test-unit     # Unit-Tests ausführen
 make test-int      # Integrationstests ausführen
 make lint          # Linting ausführen
 make format        # Code formatieren
 make typecheck     # statische Typprüfung
+make db-smoke      # Alembic-/DB-Smoke-Test gegen lokale Postgres-Instanz
 make seed          # Beispiel-/Fixture-Daten einspielen
 make clean         # lokale Build-Artefakte bereinigen
+make verify-foundation  # isolierte Operationalisierungs-Checks
 ```
+
+### PR-Abschluss-Checkliste (Operationalisierung)
+- [ ] `make verify-foundation` erfolgreich ausgeführt
+- [ ] Falls verfügbar: `make bootstrap` mit Python 3.12 getestet
+- [ ] Falls verfügbar: `make dev` mit Docker getestet
+- [ ] Optionale Profile bei Bedarf getestet (`ENABLE_OLLAMA=1`, `ENABLE_APP_CONTAINERS=1`)
+- [ ] Bekannte Restrisiken im PR benannt (z. B. fehlende lokale Docker-Installation)
 
 ## Projektstatus
 

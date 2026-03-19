@@ -1,24 +1,17 @@
 from __future__ import annotations
 
 import os
-import sys
 from pathlib import Path
 
 import pytest
-
-pytest.importorskip("alembic")
-pytest.importorskip("sqlalchemy")
 from alembic import command
 from alembic.config import Config
 from sqlalchemy import create_engine, inspect
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-API_ROOT = Path(__file__).resolve().parents[2] / "services" / "api"
-if str(API_ROOT) not in sys.path:
-    sys.path.insert(0, str(API_ROOT))
-
-from app.infra.db.models import (  # noqa: E402
+from app.infra.db.models import (
     GeneratedPlanORM,
     SessionBlockORM,
     SourceFileORM,
@@ -26,6 +19,15 @@ from app.infra.db.models import (  # noqa: E402
     TrainingSetORM,
     ValidationResultORM,
 )
+
+EXPECTED_TABLES = {
+    "source_files",
+    "training_sessions",
+    "session_blocks",
+    "training_sets",
+    "generated_plans",
+    "validation_results",
+}
 
 
 @pytest.fixture
@@ -39,7 +41,7 @@ def db_url(monkeypatch: pytest.MonkeyPatch) -> str:
 
 
 @pytest.fixture
-def migrated_engine(db_url: str):
+def migrated_engine(db_url: str) -> Engine:
     config = Config(str(Path(__file__).resolve().parents[2] / "migrations" / "alembic.ini"))
     command.upgrade(config, "head")
 
@@ -50,23 +52,13 @@ def migrated_engine(db_url: str):
         engine.dispose()
 
 
-def test_migrations_create_expected_tables(migrated_engine) -> None:
+def test_migrations_create_expected_tables(migrated_engine: Engine) -> None:
     inspector = inspect(migrated_engine)
-
-    expected_tables = {
-        "source_files",
-        "training_sessions",
-        "session_blocks",
-        "training_sets",
-        "generated_plans",
-        "validation_results",
-    }
-
-    assert expected_tables.issubset(set(inspector.get_table_names()))
+    assert EXPECTED_TABLES.issubset(set(inspector.get_table_names()))
 
 
 def test_core_entities_can_be_persisted_and_generated_marker_is_enforced(
-    migrated_engine,
+    migrated_engine: Engine,
 ) -> None:
     with Session(migrated_engine) as session:
         source = SourceFileORM(source_type="text", original_filename="plan.txt")
@@ -104,3 +96,24 @@ def test_core_entities_can_be_persisted_and_generated_marker_is_enforced(
         session.add(violating_plan)
         with pytest.raises(IntegrityError):
             session.flush()
+
+
+def test_migration_roundtrip_upgrade_downgrade_upgrade(db_url: str) -> None:
+    config = Config(str(Path(__file__).resolve().parents[2] / "migrations" / "alembic.ini"))
+
+    command.upgrade(config, "head")
+    engine = create_engine(db_url, future=True)
+    try:
+        inspector = inspect(engine)
+        assert EXPECTED_TABLES.issubset(set(inspector.get_table_names()))
+
+        command.downgrade(config, "base")
+        inspector_after_downgrade = inspect(engine)
+        existing_after_downgrade = set(inspector_after_downgrade.get_table_names())
+        assert EXPECTED_TABLES.isdisjoint(existing_after_downgrade)
+
+        command.upgrade(config, "head")
+        inspector_after_reupgrade = inspect(engine)
+        assert EXPECTED_TABLES.issubset(set(inspector_after_reupgrade.get_table_names()))
+    finally:
+        engine.dispose()

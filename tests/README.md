@@ -9,15 +9,16 @@ Die Ausführung erfolgt über die im Repository definierten Make-Targets:
 - `make test`
 - `make test-unit`
 - `make test-int`
+- `make db-smoke`
 
 ## Integration: DB-Smoke-Test
 
 Für den DB-Smoke-Test wird eine erreichbare PostgreSQL-Instanz benötigt.
 
 - Setze `TEST_DATABASE_URL` (oder alternativ `DATABASE_URL`)
-- Führe Migrationen über Alembic aus (im Test automatisch `upgrade head`)
+- Führe Migrationen über Alembic aus (inkl. Upgrade/Downgrade-Roundtrip im Test)
 - Starte anschließend den Integrationstest:
 
 ```bash
-pytest tests/integration/test_db_smoke.py
+make db-smoke
 ```

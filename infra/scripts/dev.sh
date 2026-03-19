@@ -9,6 +9,7 @@ run_from_root
 
 if ! command_exists docker; then
   error "Docker is required for local development services."
+  error "Install Docker Desktop, then rerun 'make dev'."
   exit 1
 fi
 

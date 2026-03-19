@@ -9,11 +9,16 @@ description = "SetCraft repository foundation tooling."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+  "fastapi>=0.116,<1.0",
   "pydantic>=2.0,<3.0",
+  "sqlalchemy>=2.0.36,<3.0",
+  "alembic>=1.14,<2.0",
+  "psycopg[binary]>=3.2,<4.0",
 ]
 
 [project.optional-dependencies]
 dev = [
+  "httpx>=0.28,<1.0",
   "mypy>=1.10,<2.0",
   "pytest>=8.0,<9.0",
   "ruff>=0.5,<1.0",
@@ -22,9 +27,14 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+exclude = [
+  "migrations",
+  "services/api/app/infra",
+  "tests/integration",
+]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP"]
+select = ["E", "F", "I"]
 
 [tool.mypy]
 python_version = "3.12"
@@ -32,3 +42,24 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 no_implicit_optional = true
 strict_equality = true
+files = ["packages/schemas/python", "services/api/app"]
+mypy_path = ["packages/schemas/python", "services/api"]
+exclude = "(^services/api/app/infra/|^tests/integration/)"
+
+[[tool.mypy.overrides]]
+module = [
+  "fastapi",
+  "fastapi.*",
+  "starlette",
+  "starlette.*",
+  "sqlalchemy",
+  "sqlalchemy.*",
+  "alembic",
+  "alembic.*",
+  "psycopg",
+  "psycopg.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = ["services/api", "packages/schemas/python"]

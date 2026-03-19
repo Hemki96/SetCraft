@@ -6,8 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
 
 run_from_root
-require_tool ruff
-ruff_bin="$(resolve_command ruff)"
+require_python312_venv
+require_venv_tool ruff
+ruff_bin="$(resolve_venv_tool ruff)"
 
 paths=(packages services apps tests)
 

@@ -14,23 +14,15 @@ Minimales FastAPI-Scaffold fuer den Backend-Strang.
 ## Vorhandene Endpunkte
 
 - `GET /api/v1/health`
+- `GET /api/v1/health/db`
+- `POST /api/v1/auth/login` (Placeholder)
+- `GET /api/v1/auth/me` (Placeholder)
+- `POST /api/v1/sources` (Placeholder)
+- `GET /api/v1/sources` (Placeholder)
+- `GET /api/v1/sources/{sourceId}` (Placeholder)
+- `POST /api/v1/sources/{sourceId}/reprocess` (Placeholder)
+- `GET /api/v1/sessions` (Placeholder)
+- `GET /api/v1/sessions/{sessionId}` (Placeholder)
+- `GET /api/v1/retrieval/search` (Placeholder)
 
-## Setup (lokal)
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r services/api/requirements-dev.txt
-```
-
-## Datenbank und Migrationen
-
-- Standard-DB-Konfiguration erfolgt ueber `POSTGRES_*` in `.env`.
-- Optional kann `DATABASE_URL` gesetzt werden, um die Einzelwerte zu ueberschreiben.
-- Alembic-Konfiguration liegt in `migrations/alembic.ini`.
-
-Migrationen ausfuehren:
-
-```bash
-alembic -c migrations/alembic.ini upgrade head
-```
+Diese Endpunkte liefern bewusst nur einen stabilen API-Rahmen ohne fachliche Business-Logik.

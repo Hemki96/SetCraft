@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Literal
 from uuid import UUID, uuid4
 
@@ -16,13 +16,13 @@ class StrictSchema(BaseModel):
     model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
 
 
-class SourceType(str, Enum):
+class SourceType(StrEnum):
     DOCX = "docx"
     PDF = "pdf"
     TEXT = "text"
 
 
-class SourceStatus(str, Enum):
+class SourceStatus(StrEnum):
     UPLOADED = "uploaded"
     QUEUED = "queued"
     EXTRACTING = "extracting"
@@ -34,35 +34,35 @@ class SourceStatus(str, Enum):
     FAILED = "failed"
 
 
-class ReviewStatus(str, Enum):
+class ReviewStatus(StrEnum):
     NEEDS_REVIEW = "needs_review"
     REVIEWED = "reviewed"
     CORRECTED = "corrected"
 
 
-class ApprovalStatus(str, Enum):
+class ApprovalStatus(StrEnum):
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
 
 
-class PlanType(str, Enum):
+class PlanType(StrEnum):
     SESSION_PLAN = "session_plan"
     WEEK_PLAN = "week_plan"
 
 
-class ReviewTargetType(str, Enum):
+class ReviewTargetType(StrEnum):
     SESSION = "session"
     GENERATED_PLAN = "generated_plan"
 
 
-class ReviewDecisionType(str, Enum):
+class ReviewDecisionType(StrEnum):
     REVIEWED = "reviewed"
     CORRECTED = "corrected"
     REJECTED = "rejected"
 
 
-class ValidationSeverity(str, Enum):
+class ValidationSeverity(StrEnum):
     WARNING = "warning"
     ERROR = "error"
 
@@ -171,4 +171,3 @@ class GeneratedPlan(StrictSchema):
         ):
             raise ValueError("generated plan cannot be approved before review")
         return self
-

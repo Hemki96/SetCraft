@@ -18,3 +18,8 @@ repos:
         entry: make typecheck
         language: system
         pass_filenames: false
+      - id: make-test-unit
+        name: make test-unit
+        entry: make test-unit
+        language: system
+        pass_filenames: false

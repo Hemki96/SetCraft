@@ -8,7 +8,7 @@ export async function checkApiHealth(): Promise<HealthStatus> {
   const checkedAtIso = new Date().toISOString();
 
   try {
-    const response = await fetch("/api/health", {
+    const response = await fetch("/api/v1/health", {
       headers: {
         Accept: "application/json",
       },

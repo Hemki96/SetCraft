@@ -30,6 +30,9 @@ Die CI/CD-Pipeline soll für den MVP vor allem:
   - `make lint`
   - `make typecheck`
   - `make test`
+- Aktueller Fokus der Qualitaetschecks ist das API-/Web-Scaffold.
+- Der DB-/Alembic-Strang wird separat weitergefuehrt und danach in die
+  regulaeren Quality Gates integriert.
 
 Dadurch bleiben lokale Qualitaetspruefung und CI deckungsgleich.
 

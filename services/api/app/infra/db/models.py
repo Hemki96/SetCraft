@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from enum import Enum
+from datetime import UTC, datetime
+from enum import StrEnum
 from uuid import UUID, uuid4
 
 from sqlalchemy import (
@@ -23,7 +23,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.infra.db.base import Base
 
 
-class SourceStatus(str, Enum):
+class SourceStatus(StrEnum):
     UPLOADED = "uploaded"
     QUEUED = "queued"
     EXTRACTING = "extracting"
@@ -35,13 +35,13 @@ class SourceStatus(str, Enum):
     FAILED = "failed"
 
 
-class ReviewStatus(str, Enum):
+class ReviewStatus(StrEnum):
     NEEDS_REVIEW = "needs_review"
     REVIEWED = "reviewed"
     CORRECTED = "corrected"
 
 
-class ApprovalStatus(str, Enum):
+class ApprovalStatus(StrEnum):
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
@@ -57,21 +57,21 @@ class SourceFileORM(Base):
         String(32), nullable=False, default=SourceStatus.UPLOADED.value
     )
     ingested_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
     raw_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     details_json: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
-    sessions: Mapped[list["TrainingSessionORM"]] = relationship(back_populates="source_file")
+    sessions: Mapped[list[TrainingSessionORM]] = relationship(back_populates="source_file")
 
 
 class TrainingSessionORM(Base):
@@ -101,17 +101,17 @@ class TrainingSessionORM(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     details_json: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     source_file: Mapped[SourceFileORM] = relationship(back_populates="sessions")
-    blocks: Mapped[list["SessionBlockORM"]] = relationship(
+    blocks: Mapped[list[SessionBlockORM]] = relationship(
         back_populates="session", cascade="all, delete-orphan"
     )
 
@@ -119,7 +119,11 @@ class TrainingSessionORM(Base):
 class SessionBlockORM(Base):
     __tablename__ = "session_blocks"
     __table_args__ = (
-        UniqueConstraint("session_id", "order_index", name="uq_session_blocks_session_id_order_index"),
+        UniqueConstraint(
+            "session_id",
+            "order_index",
+            name="uq_session_blocks_session_id_order_index",
+        ),
         CheckConstraint("order_index >= 0", name="order_index_non_negative"),
     )
 
@@ -135,17 +139,17 @@ class SessionBlockORM(Base):
     raw_snapshot: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
     details_json: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     session: Mapped[TrainingSessionORM] = relationship(back_populates="blocks")
-    sets: Mapped[list["TrainingSetORM"]] = relationship(
+    sets: Mapped[list[TrainingSetORM]] = relationship(
         back_populates="block", cascade="all, delete-orphan"
     )
 
@@ -175,13 +179,13 @@ class TrainingSetORM(Base):
     tags: Mapped[list[str]] = mapped_column(JSONB, nullable=False, default=list)
     details_json: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     block: Mapped[SessionBlockORM] = relationship(back_populates="sets")
@@ -207,13 +211,13 @@ class GeneratedPlanORM(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     details_json: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
 
@@ -229,7 +233,7 @@ class ValidationResultORM(Base):
     field_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
     details_json: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
 
 

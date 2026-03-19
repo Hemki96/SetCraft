@@ -41,3 +41,8 @@ npm run preview
 - API-Fachintegration
 - Persistente Zustandsverwaltung
 - Authentifizierungs-Backend
+
+## Health-Check (minimal)
+
+- Dashboard prueft den API-Status ueber `GET /api/v1/health`.
+- In der lokalen Entwicklung leitet Vite alle `/api/*`-Anfragen per Proxy auf `http://localhost:8000` weiter.

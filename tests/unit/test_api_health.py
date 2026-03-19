@@ -1,17 +1,14 @@
 from __future__ import annotations
 
 import sys
-from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 
-API_ROOT = Path(__file__).resolve().parents[2] / "services" / "api"
-sys.path.insert(0, str(API_ROOT))
+if sys.version_info < (3, 12):
+    pytest.skip("API tests require Python 3.12+", allow_module_level=True)
 
-pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient  # noqa: E402
-
-from app.main import create_app  # noqa: E402
+from app.main import create_app
 
 
 def test_health_endpoint_returns_expected_payload() -> None:
@@ -37,5 +34,36 @@ def test_unknown_route_uses_standard_error_shape() -> None:
     assert response.json() == {
         "code": "NOT_FOUND",
         "message": "Not Found",
+        "details": None,
+    }
+
+
+def test_database_health_endpoint_returns_ok_when_db_is_reachable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("app.api.v1.endpoints.health.check_database_connection", lambda: True)
+    client = TestClient(create_app())
+
+    response = client.get("/api/v1/health/db")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "ok",
+        "database": "ok",
+    }
+
+
+def test_database_health_endpoint_returns_503_when_db_is_unreachable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("app.api.v1.endpoints.health.check_database_connection", lambda: False)
+    client = TestClient(create_app())
+
+    response = client.get("/api/v1/health/db")
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "code": "HTTP_ERROR",
+        "message": "Database unavailable",
         "details": None,
     }
