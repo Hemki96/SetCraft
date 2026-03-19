@@ -1,29 +1,35 @@
+SHELL := /bin/bash
+
+SCRIPT_DIR := infra/scripts
+
+.PHONY: bootstrap dev test test-unit test-int lint format typecheck seed clean
+
 bootstrap:
-	@echo "Prepare local development environment (placeholder scaffold)"
+	@$(SCRIPT_DIR)/bootstrap.sh
 
 dev:
-	@echo "Start web, api and worker locally (placeholder scaffold)"
+	@$(SCRIPT_DIR)/dev.sh
 
 test:
-	@echo "Run all tests (placeholder scaffold)"
+	@$(SCRIPT_DIR)/test.sh
 
 test-unit:
-	@echo "Run unit tests (placeholder scaffold)"
+	@$(SCRIPT_DIR)/test-unit.sh
 
 test-int:
-	@echo "Run integration tests (placeholder scaffold)"
+	@$(SCRIPT_DIR)/test-int.sh
 
 lint:
-	@echo "Run linter (placeholder scaffold)"
+	@$(SCRIPT_DIR)/lint.sh
 
 format:
-	@echo "Format code (placeholder scaffold)"
+	@$(SCRIPT_DIR)/format.sh
 
 typecheck:
-	@echo "Run type checks (placeholder scaffold)"
+	@$(SCRIPT_DIR)/typecheck.sh
 
 seed:
-	@echo "Seed local sample data (placeholder scaffold)"
+	@$(SCRIPT_DIR)/seed.sh
 
 clean:
-	@echo "Clean local artifacts (placeholder scaffold)"
+	@$(SCRIPT_DIR)/clean.sh

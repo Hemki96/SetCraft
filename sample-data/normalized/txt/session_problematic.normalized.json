@@ -1,0 +1,38 @@
+{
+  "source_file": {
+    "source_type": "text",
+    "original_filename": "session_problematic.txt",
+    "source_status": "needs_review"
+  },
+  "training_session": {
+    "title": "Donnerstag Mix",
+    "review_status": "needs_review",
+    "approval_status": "pending",
+    "total_distance_m": null,
+    "blocks": [
+      {
+        "order_index": 0,
+        "title": "Hauptteil",
+        "block_type": "main",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 500,
+            "label": "10x50 Kraul hart"
+          },
+          {
+            "order_index": 1,
+            "distance_m": null,
+            "label": "3x? Delphin"
+          },
+          {
+            "order_index": 2,
+            "distance_m": 200,
+            "label": "200 locker"
+          }
+        ]
+      }
+    ],
+    "notes": "Mehrere Felder sind unvollstaendig und muessen im Review geklaert werden."
+  }
+}

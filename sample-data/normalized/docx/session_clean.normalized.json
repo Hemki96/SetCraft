@@ -1,0 +1,57 @@
+{
+  "source_file": {
+    "source_type": "docx",
+    "original_filename": "session_clean.docx",
+    "source_status": "normalizing"
+  },
+  "training_session": {
+    "title": "Sprint + Technik",
+    "review_status": "needs_review",
+    "approval_status": "pending",
+    "total_distance_m": 1300,
+    "blocks": [
+      {
+        "order_index": 0,
+        "title": "Einschwimmen",
+        "block_type": "warmup",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 300,
+            "label": "300m locker"
+          },
+          {
+            "order_index": 1,
+            "distance_m": 200,
+            "label": "4x50m Technik"
+          }
+        ]
+      },
+      {
+        "order_index": 1,
+        "title": "Hauptserie",
+        "block_type": "main",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 600,
+            "label": "12x50m Kraul @1:00"
+          }
+        ]
+      },
+      {
+        "order_index": 2,
+        "title": "Ausschwimmen",
+        "block_type": "cooldown",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 200,
+            "label": "200m locker"
+          }
+        ]
+      }
+    ],
+    "notes": "Klarer DOCX-Fall fuer Parser/Normalizer-Basistests."
+  }
+}

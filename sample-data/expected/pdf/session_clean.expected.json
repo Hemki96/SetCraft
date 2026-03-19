@@ -1,0 +1,8 @@
+{
+  "fixture_quality": "clean",
+  "expected_status": "normalizing",
+  "expected_block_count": 3,
+  "expected_set_count": 4,
+  "expected_review_needed": true,
+  "expected_validation_flags": []
+}

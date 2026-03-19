@@ -1,41 +1,116 @@
-version: "3.9"
+name: setcraft-local
 
 services:
-  web:
-    image: node:20
-    command: ["bash", "-lc", "echo Web placeholder"]
-    working_dir: /app
-    volumes:
-      - ./:/app
-    ports:
-      - "3000:3000"
-
-  api:
-    image: python:3.12
-    command: ["bash", "-lc", "echo API placeholder"]
-    working_dir: /app
-    volumes:
-      - ./:/app
-    ports:
-      - "8000:8000"
-
-  worker:
-    image: python:3.12
-    command: ["bash", "-lc", "echo Worker placeholder"]
-    working_dir: /app
-    volumes:
-      - ./:/app
-
   db:
-    image: postgres:16
+    image: postgres:16-alpine
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: training_plan_platform
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-training_plan_platform}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-training_plan_platform}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
-    image: redis:7
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    profiles: ["ai"]
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "--version"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: python:3.12-slim
+    profiles: ["app"]
+    working_dir: /workspace
+    command: ["bash", "-lc", "echo 'API scaffold container running (no service entrypoint yet).' && sleep infinity"]
+    volumes:
+      - ./:/workspace
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      API_HOST: 0.0.0.0
+      API_PORT: ${API_PORT:-8000}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-training_plan_platform}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${API_PORT:-8000}:8000"
+
+  worker:
+    image: python:3.12-slim
+    profiles: ["app"]
+    working_dir: /workspace
+    command: ["bash", "-lc", "echo 'Worker scaffold container running (no worker entrypoint yet).' && sleep infinity"]
+    volumes:
+      - ./:/workspace
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-training_plan_platform}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    image: node:20-bookworm-slim
+    profiles: ["app"]
+    working_dir: /workspace
+    command: ["bash", "-lc", "echo 'Web scaffold container running (no frontend dev server yet).' && sleep infinity"]
+    volumes:
+      - ./:/workspace
+    environment:
+      WEB_PORT: ${WEB_PORT:-3000}
+      API_BASE_URL: http://api:${API_PORT:-8000}
+    depends_on:
+      api:
+        condition: service_started
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+
+volumes:
+  postgres_data:
+  redis_data:
+  ollama_data:

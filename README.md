@@ -93,7 +93,7 @@ Ziel ist der Aufbau einer selbst entwickelten, möglichst kostenfreien bzw. selb
 
 ## Lokales Setup
 
-> Stand: Repository-Fundament. Implementierung folgt schrittweise.
+> Stand: Repository-Fundament mit operationalisierten Dev-Kommandos.
 
 ### Voraussichtliche Kernkomponenten
 - Python
@@ -111,6 +111,18 @@ make dev
 make test
 make lint
 ```
+
+### Dev-Hinweise
+- `make bootstrap` legt `.env` (falls nicht vorhanden) und `.venv` an und installiert Dev-Tools aus `pyproject.toml` (`.[dev]`).
+- `make dev` startet standardmäßig lokale Infrastruktur (`db`, `redis`) via Docker Compose.
+- Optional kann Ollama lokal mitgestartet werden:
+  ```bash
+  ENABLE_OLLAMA=1 make dev
+  ```
+- Optional können Scaffold-Container für `api`, `worker` und `web` mitgestartet werden:
+  ```bash
+  ENABLE_APP_CONTAINERS=1 make dev
+  ```
 
 ## Wichtigste Kommandos
 

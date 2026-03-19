@@ -1,0 +1,63 @@
+{
+  "source_file": {
+    "source_type": "text",
+    "original_filename": "session_clean.txt",
+    "source_status": "normalizing"
+  },
+  "training_session": {
+    "title": "GA1 Technik + Pace",
+    "review_status": "needs_review",
+    "approval_status": "pending",
+    "total_distance_m": 2500,
+    "duration_min": null,
+    "tags": [
+      "swim",
+      "ga1",
+      "technik"
+    ],
+    "blocks": [
+      {
+        "order_index": 0,
+        "title": "Einschwimmen",
+        "block_type": "warmup",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 400,
+            "label": "4x100m Freistil locker"
+          }
+        ]
+      },
+      {
+        "order_index": 1,
+        "title": "Hauptserie",
+        "block_type": "main",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 300,
+            "label": "6x50m Kraul Technik"
+          },
+          {
+            "order_index": 1,
+            "distance_m": 800,
+            "label": "8x100m Freistil @ 1:28/100m"
+          }
+        ]
+      },
+      {
+        "order_index": 2,
+        "title": "Ausschwimmen",
+        "block_type": "cooldown",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 200,
+            "label": "200m Ruecken locker"
+          }
+        ]
+      }
+    ],
+    "notes": "Beispiel fuer klar strukturierten TXT-Import."
+  }
+}

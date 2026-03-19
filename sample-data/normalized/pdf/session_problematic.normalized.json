@@ -1,0 +1,33 @@
+{
+  "source_file": {
+    "source_type": "pdf",
+    "original_filename": "session_problematic.pdf",
+    "source_status": "needs_review"
+  },
+  "training_session": {
+    "title": "Samstagsplan alt",
+    "review_status": "needs_review",
+    "approval_status": "pending",
+    "total_distance_m": 900,
+    "blocks": [
+      {
+        "order_index": 0,
+        "title": "Hauptteil",
+        "block_type": "main",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 600,
+            "label": "6x100 schnell"
+          },
+          {
+            "order_index": 1,
+            "distance_m": 300,
+            "label": "300 mix"
+          }
+        ]
+      }
+    ],
+    "notes": "Intervall und Intensitaet sind im Scan unleserlich."
+  }
+}

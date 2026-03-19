@@ -1,0 +1,57 @@
+{
+  "source_file": {
+    "source_type": "pdf",
+    "original_filename": "session_clean.pdf",
+    "source_status": "normalizing"
+  },
+  "training_session": {
+    "title": "Grundlagenausdauer Langbahn",
+    "review_status": "needs_review",
+    "approval_status": "pending",
+    "total_distance_m": 1800,
+    "blocks": [
+      {
+        "order_index": 0,
+        "title": "Einschwimmen",
+        "block_type": "warmup",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 400,
+            "label": "400m"
+          },
+          {
+            "order_index": 1,
+            "distance_m": 200,
+            "label": "4x50m Beine"
+          }
+        ]
+      },
+      {
+        "order_index": 1,
+        "title": "Hauptserie",
+        "block_type": "main",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 1000,
+            "label": "5x200m Freistil @3:30"
+          }
+        ]
+      },
+      {
+        "order_index": 2,
+        "title": "Ausschwimmen",
+        "block_type": "cooldown",
+        "sets": [
+          {
+            "order_index": 0,
+            "distance_m": 200,
+            "label": "200m locker"
+          }
+        ]
+      }
+    ],
+    "notes": "Sauberer PDF-Beispielfall."
+  }
+}

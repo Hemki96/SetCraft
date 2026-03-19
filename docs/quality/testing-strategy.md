@@ -36,3 +36,14 @@ Die Tests sollen sicherstellen, dass:
 - Historische Einheit suchen
 - Neue Einheit erzeugen
 - Wochenplan erzeugen und exportieren
+
+## Fixture-Basis fuer Importtests
+
+Die initiale Fixture- und Testdatenbasis liegt in:
+
+- `sample-data/raw/`
+- `sample-data/normalized/`
+- `sample-data/expected/`
+- `tests/fixtures/fixture-manifest.json`
+
+Details zu Konventionen und Pflege stehen in `docs/quality/fixture-conventions.md`.

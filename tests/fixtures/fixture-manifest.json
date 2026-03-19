@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "description": "Fixture mapping for raw input files and their normalized/expected references.",
+  "cases": [
+    {
+      "id": "docx-clean-001",
+      "source_type": "docx",
+      "quality": "clean",
+      "raw_file": "sample-data/raw/docx/session_clean.docx",
+      "normalized_file": "sample-data/normalized/docx/session_clean.normalized.json",
+      "expected_file": "sample-data/expected/docx/session_clean.expected.json"
+    },
+    {
+      "id": "docx-problematic-001",
+      "source_type": "docx",
+      "quality": "problematic",
+      "raw_file": "sample-data/raw/docx/session_problematic.docx",
+      "normalized_file": "sample-data/normalized/docx/session_problematic.normalized.json",
+      "expected_file": "sample-data/expected/docx/session_problematic.expected.json"
+    },
+    {
+      "id": "pdf-clean-001",
+      "source_type": "pdf",
+      "quality": "clean",
+      "raw_file": "sample-data/raw/pdf/session_clean.pdf",
+      "normalized_file": "sample-data/normalized/pdf/session_clean.normalized.json",
+      "expected_file": "sample-data/expected/pdf/session_clean.expected.json"
+    },
+    {
+      "id": "pdf-problematic-001",
+      "source_type": "pdf",
+      "quality": "problematic",
+      "raw_file": "sample-data/raw/pdf/session_problematic.pdf",
+      "normalized_file": "sample-data/normalized/pdf/session_problematic.normalized.json",
+      "expected_file": "sample-data/expected/pdf/session_problematic.expected.json"
+    },
+    {
+      "id": "txt-clean-001",
+      "source_type": "text",
+      "quality": "clean",
+      "raw_file": "sample-data/raw/txt/session_clean.txt",
+      "normalized_file": "sample-data/normalized/txt/session_clean.normalized.json",
+      "expected_file": "sample-data/expected/txt/session_clean.expected.json"
+    },
+    {
+      "id": "txt-problematic-001",
+      "source_type": "text",
+      "quality": "problematic",
+      "raw_file": "sample-data/raw/txt/session_problematic.txt",
+      "normalized_file": "sample-data/normalized/txt/session_problematic.normalized.json",
+      "expected_file": "sample-data/expected/txt/session_problematic.expected.json"
+    }
+  ]
+}

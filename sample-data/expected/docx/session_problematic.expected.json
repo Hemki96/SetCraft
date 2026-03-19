@@ -1,0 +1,11 @@
+{
+  "fixture_quality": "problematic",
+  "expected_status": "needs_review",
+  "expected_block_count": 2,
+  "expected_set_count": 2,
+  "expected_review_needed": true,
+  "expected_validation_flags": [
+    "missing_interval_details",
+    "unclear_intensity"
+  ]
+}
