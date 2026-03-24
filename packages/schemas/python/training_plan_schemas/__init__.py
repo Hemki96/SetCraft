@@ -7,6 +7,8 @@ from .domain_v1 import (
     ReviewDecision,
     ReviewDecisionType,
     ReviewStatus,
+    SessionApprovalStatus,
+    SessionReviewStatus,
     ReviewTargetType,
     SessionBlock,
     SourceFile,
@@ -25,6 +27,8 @@ __all__ = [
     "ReviewDecision",
     "ReviewDecisionType",
     "ReviewStatus",
+    "SessionApprovalStatus",
+    "SessionReviewStatus",
     "ReviewTargetType",
     "SessionBlock",
     "SourceFile",
@@ -35,4 +39,3 @@ __all__ = [
     "ValidationResult",
     "ValidationSeverity",
 ]
-

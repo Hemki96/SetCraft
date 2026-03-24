@@ -48,9 +48,25 @@ class ApprovalStatus(StrEnum):
     REJECTED = "rejected"
 
 
+class SessionReviewStatus(StrEnum):
+    PENDING_REVIEW = "pending_review"
+    IN_REVIEW = "in_review"
+    REVIEWED_WITH_CHANGES = "reviewed_with_changes"
+    REVIEWED_OK = "reviewed_ok"
+
+
+class SessionApprovalStatus(StrEnum):
+    NOT_SUBMITTED = "not_submitted"
+    SUBMITTED = "submitted"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+
+
 SOURCE_STATUS_VALUES = tuple(status.value for status in SourceStatus)
 REVIEW_STATUS_VALUES = tuple(status.value for status in ReviewStatus)
 APPROVAL_STATUS_VALUES = tuple(status.value for status in ApprovalStatus)
+SESSION_REVIEW_STATUS_VALUES = tuple(status.value for status in SessionReviewStatus)
+SESSION_APPROVAL_STATUS_VALUES = tuple(status.value for status in SessionApprovalStatus)
 
 
 class SourceFileORM(Base):
@@ -92,11 +108,11 @@ class TrainingSessionORM(Base):
         CheckConstraint("total_distance_m >= 0", name="total_distance_m_non_negative"),
         CheckConstraint("duration_min >= 0", name="duration_min_non_negative"),
         CheckConstraint(
-            f"review_status IN {REVIEW_STATUS_VALUES}",
+            f"review_status IN {SESSION_REVIEW_STATUS_VALUES}",
             name="training_session_review_status_allowed_values",
         ),
         CheckConstraint(
-            f"approval_status IN {APPROVAL_STATUS_VALUES}",
+            f"approval_status IN {SESSION_APPROVAL_STATUS_VALUES}",
             name="training_session_approval_status_allowed_values",
         ),
     )
@@ -109,10 +125,10 @@ class TrainingSessionORM(Base):
     )
     title: Mapped[str | None] = mapped_column(Text, nullable=True)
     review_status: Mapped[str] = mapped_column(
-        String(24), nullable=False, default=ReviewStatus.NEEDS_REVIEW.value
+        String(32), nullable=False, default=SessionReviewStatus.PENDING_REVIEW.value
     )
     approval_status: Mapped[str] = mapped_column(
-        String(24), nullable=False, default=ApprovalStatus.PENDING.value
+        String(24), nullable=False, default=SessionApprovalStatus.NOT_SUBMITTED.value
     )
     total_distance_m: Mapped[int | None] = mapped_column(Integer, nullable=True)
     duration_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -216,11 +232,11 @@ class GeneratedPlanORM(Base):
     __table_args__ = (
         CheckConstraint("is_generated = true", name="generated_plan_is_generated_true"),
         CheckConstraint(
-            f"review_status IN {REVIEW_STATUS_VALUES}",
+            f"review_status IN {SESSION_REVIEW_STATUS_VALUES}",
             name="generated_plan_review_status_allowed_values",
         ),
         CheckConstraint(
-            f"approval_status IN {APPROVAL_STATUS_VALUES}",
+            f"approval_status IN {SESSION_APPROVAL_STATUS_VALUES}",
             name="generated_plan_approval_status_allowed_values",
         ),
     )
@@ -229,10 +245,10 @@ class GeneratedPlanORM(Base):
     plan_type: Mapped[str] = mapped_column(String(32), nullable=False)
     is_generated: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     review_status: Mapped[str] = mapped_column(
-        String(24), nullable=False, default=ReviewStatus.NEEDS_REVIEW.value
+        String(32), nullable=False, default=SessionReviewStatus.PENDING_REVIEW.value
     )
     approval_status: Mapped[str] = mapped_column(
-        String(24), nullable=False, default=ApprovalStatus.PENDING.value
+        String(24), nullable=False, default=SessionApprovalStatus.NOT_SUBMITTED.value
     )
     reference_session_ids: Mapped[list[str]] = mapped_column(JSONB, nullable=False, default=list)
     content_snapshot: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False, default=dict)

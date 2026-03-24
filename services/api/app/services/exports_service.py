@@ -4,7 +4,7 @@ import json
 from uuid import UUID
 
 from fastapi import HTTPException
-from training_plan_schemas.domain_v1 import ApprovalStatus
+from training_plan_schemas.domain_v1 import SessionApprovalStatus
 
 from app.schemas.exports import ExportCreateRequest, ExportFormat, ExportJobResponse, ExportStatus
 from app.services.auth_service import RequestActor
@@ -39,7 +39,7 @@ def create_export_job(payload: ExportCreateRequest, actor: RequestActor) -> Expo
         if plan is None:
             raise HTTPException(status_code=404, detail="Generated plan not found")
 
-        if plan.approval_status != ApprovalStatus.APPROVED:
+        if plan.approval_status != SessionApprovalStatus.APPROVED:
             raise HTTPException(
                 status_code=409,
                 detail="Only approved generated plans can be exported",

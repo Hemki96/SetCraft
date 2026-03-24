@@ -7,7 +7,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class StrictSchema(BaseModel):
@@ -42,6 +42,20 @@ class ReviewStatus(StrEnum):
 
 class ApprovalStatus(StrEnum):
     PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+
+
+class SessionReviewStatus(StrEnum):
+    PENDING_REVIEW = "pending_review"
+    IN_REVIEW = "in_review"
+    REVIEWED_WITH_CHANGES = "reviewed_with_changes"
+    REVIEWED_OK = "reviewed_ok"
+
+
+class SessionApprovalStatus(StrEnum):
+    NOT_SUBMITTED = "not_submitted"
+    SUBMITTED = "submitted"
     APPROVED = "approved"
     REJECTED = "rejected"
 
@@ -107,8 +121,8 @@ class TrainingSession(StrictSchema):
     id: UUID = Field(default_factory=uuid4)
     source_file_id: UUID
     title: str | None = None
-    review_status: ReviewStatus = ReviewStatus.NEEDS_REVIEW
-    approval_status: ApprovalStatus = ApprovalStatus.PENDING
+    review_status: SessionReviewStatus = SessionReviewStatus.PENDING_REVIEW
+    approval_status: SessionApprovalStatus = SessionApprovalStatus.NOT_SUBMITTED
     total_distance_m: int | None = Field(default=None, ge=0)
     duration_min: int | None = Field(default=None, ge=0)
     blocks: list[SessionBlock] = Field(default_factory=list)
@@ -120,11 +134,39 @@ class TrainingSession(StrictSchema):
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
+    @field_validator("review_status", mode="before")
+    @classmethod
+    def _normalize_legacy_review_status(
+        cls, value: SessionReviewStatus | str
+    ) -> SessionReviewStatus | str:
+        legacy_map = {
+            "needs_review": SessionReviewStatus.PENDING_REVIEW,
+            "reviewed": SessionReviewStatus.REVIEWED_OK,
+            "corrected": SessionReviewStatus.REVIEWED_WITH_CHANGES,
+        }
+        if isinstance(value, str):
+            return legacy_map.get(value, value)
+        return value
+
+    @field_validator("approval_status", mode="before")
+    @classmethod
+    def _normalize_legacy_approval_status(
+        cls, value: SessionApprovalStatus | str
+    ) -> SessionApprovalStatus | str:
+        legacy_map = {"pending": SessionApprovalStatus.NOT_SUBMITTED}
+        if isinstance(value, str):
+            return legacy_map.get(value, value)
+        return value
+
     @model_validator(mode="after")
     def _ensure_approval_after_review(self) -> TrainingSession:
         if (
-            self.approval_status == ApprovalStatus.APPROVED
-            and self.review_status == ReviewStatus.NEEDS_REVIEW
+            self.approval_status == SessionApprovalStatus.APPROVED
+            and self.review_status
+            not in {
+                SessionReviewStatus.REVIEWED_WITH_CHANGES,
+                SessionReviewStatus.REVIEWED_OK,
+            }
         ):
             raise ValueError(
                 "training session cannot be approved before review is completed"
@@ -159,8 +201,8 @@ class GeneratedPlan(StrictSchema):
     id: UUID = Field(default_factory=uuid4)
     plan_type: PlanType
     is_generated: Literal[True] = True
-    review_status: ReviewStatus = ReviewStatus.NEEDS_REVIEW
-    approval_status: ApprovalStatus = ApprovalStatus.PENDING
+    review_status: SessionReviewStatus = SessionReviewStatus.PENDING_REVIEW
+    approval_status: SessionApprovalStatus = SessionApprovalStatus.NOT_SUBMITTED
     reference_session_ids: list[UUID] = Field(default_factory=list)
     content_snapshot: dict[str, object] = Field(default_factory=dict)
     validation_results: list[ValidationResult] = Field(default_factory=list)
@@ -168,11 +210,39 @@ class GeneratedPlan(StrictSchema):
     details_json: dict[str, object] = Field(default_factory=dict)
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
+    @field_validator("review_status", mode="before")
+    @classmethod
+    def _normalize_legacy_generated_review_status(
+        cls, value: SessionReviewStatus | str
+    ) -> SessionReviewStatus | str:
+        legacy_map = {
+            "needs_review": SessionReviewStatus.PENDING_REVIEW,
+            "reviewed": SessionReviewStatus.REVIEWED_OK,
+            "corrected": SessionReviewStatus.REVIEWED_WITH_CHANGES,
+        }
+        if isinstance(value, str):
+            return legacy_map.get(value, value)
+        return value
+
+    @field_validator("approval_status", mode="before")
+    @classmethod
+    def _normalize_legacy_generated_approval_status(
+        cls, value: SessionApprovalStatus | str
+    ) -> SessionApprovalStatus | str:
+        legacy_map = {"pending": SessionApprovalStatus.NOT_SUBMITTED}
+        if isinstance(value, str):
+            return legacy_map.get(value, value)
+        return value
+
     @model_validator(mode="after")
     def _ensure_approval_after_review(self) -> GeneratedPlan:
         if (
-            self.approval_status == ApprovalStatus.APPROVED
-            and self.review_status == ReviewStatus.NEEDS_REVIEW
+            self.approval_status == SessionApprovalStatus.APPROVED
+            and self.review_status
+            not in {
+                SessionReviewStatus.REVIEWED_WITH_CHANGES,
+                SessionReviewStatus.REVIEWED_OK,
+            }
         ):
             raise ValueError("generated plan cannot be approved before review")
         return self

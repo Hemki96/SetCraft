@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, Field
-from training_plan_schemas.domain_v1 import ReviewDecisionType, TrainingSession
+from training_plan_schemas.domain_v1 import (
+    ReviewDecisionType,
+    SessionReviewStatus,
+    TrainingSession,
+)
 
 
 class SessionListResponse(BaseModel):
@@ -42,4 +46,17 @@ class SessionReviewRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     decision: ReviewDecisionType
+    comment: str | None = None
+
+
+class SessionReviewCompleteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    review_status: SessionReviewStatus
+    comment: str | None = None
+
+
+class SessionRejectRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     comment: str | None = None

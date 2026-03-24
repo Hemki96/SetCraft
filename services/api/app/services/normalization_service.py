@@ -5,9 +5,9 @@ from typing import Iterable
 from uuid import UUID
 
 from training_plan_schemas.domain_v1 import (
-    ApprovalStatus,
-    ReviewStatus,
+    SessionApprovalStatus,
     SessionBlock,
+    SessionReviewStatus,
     TrainingSession,
     TrainingSet,
 )
@@ -58,8 +58,8 @@ def normalize_to_session(*, source_file_id: UUID, segments: Iterable[str]) -> Tr
     return TrainingSession(
         source_file_id=source_file_id,
         title="Imported Session",
-        review_status=ReviewStatus.NEEDS_REVIEW,
-        approval_status=ApprovalStatus.PENDING,
+        review_status=SessionReviewStatus.PENDING_REVIEW,
+        approval_status=SessionApprovalStatus.NOT_SUBMITTED,
         total_distance_m=total_distance_m,
         duration_min=duration_min,
         blocks=[block],

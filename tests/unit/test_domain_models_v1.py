@@ -9,6 +9,8 @@ from training_plan_schemas.domain_v1 import (
     GeneratedPlan,
     PlanType,
     ReviewStatus,
+    SessionApprovalStatus,
+    SessionReviewStatus,
     SourceFile,
     TrainingSession,
 )
@@ -29,8 +31,8 @@ def test_training_session_approval_requires_review() -> None:
         TrainingSession.model_validate(
             {
                 "source_file_id": str(uuid4()),
-                "review_status": ReviewStatus.NEEDS_REVIEW,
-                "approval_status": ApprovalStatus.APPROVED,
+                "review_status": SessionReviewStatus.PENDING_REVIEW,
+                "approval_status": SessionApprovalStatus.APPROVED,
             }
         )
 
@@ -49,6 +51,30 @@ def test_generated_plan_approval_requires_review() -> None:
                 "approval_status": ApprovalStatus.APPROVED,
             }
         )
+
+
+def test_training_session_legacy_status_values_are_normalized() -> None:
+    session = TrainingSession.model_validate(
+        {
+            "source_file_id": str(uuid4()),
+            "review_status": "corrected",
+            "approval_status": "pending",
+        }
+    )
+    assert session.review_status == SessionReviewStatus.REVIEWED_WITH_CHANGES
+    assert session.approval_status == SessionApprovalStatus.NOT_SUBMITTED
+
+
+def test_generated_plan_legacy_status_values_are_normalized() -> None:
+    plan = GeneratedPlan.model_validate(
+        {
+            "plan_type": PlanType.SESSION_PLAN,
+            "review_status": "reviewed",
+            "approval_status": "pending",
+        }
+    )
+    assert plan.review_status == SessionReviewStatus.REVIEWED_OK
+    assert plan.approval_status == SessionApprovalStatus.NOT_SUBMITTED
 
 
 def test_training_session_extraction_confidence_must_be_between_zero_and_one() -> None:

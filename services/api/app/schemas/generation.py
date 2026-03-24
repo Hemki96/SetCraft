@@ -3,7 +3,11 @@ from __future__ import annotations
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
-from training_plan_schemas.domain_v1 import GeneratedPlan, ValidationResult
+from training_plan_schemas.domain_v1 import (
+    GeneratedPlan,
+    SessionReviewStatus,
+    ValidationResult,
+)
 
 
 class GenerateSetPlanRequest(BaseModel):
@@ -45,3 +49,16 @@ class GenerationApprovalResponse(BaseModel):
     plan: GeneratedPlan
     approved: bool
     validation_results: list[ValidationResult]
+
+
+class GeneratedPlanReviewCompleteRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    review_status: SessionReviewStatus
+    comment: str | None = None
+
+
+class GeneratedPlanRejectRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    comment: str | None = None

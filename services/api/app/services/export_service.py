@@ -5,7 +5,7 @@ from pathlib import Path
 from uuid import UUID
 
 from fastapi import HTTPException
-from training_plan_schemas.domain_v1 import ApprovalStatus
+from training_plan_schemas.domain_v1 import SessionApprovalStatus
 
 from app.schemas.exports import ExportCreateRequest, ExportJobResponse, ExportStatus
 from app.services.store import STORE, ExportJob
@@ -31,7 +31,7 @@ def create_export(payload: ExportCreateRequest) -> ExportJobResponse:
         plan = STORE.generated_plans.get(payload.generated_plan_id)
         if plan is None:
             raise HTTPException(status_code=404, detail="Generated plan not found")
-        if plan.approval_status != ApprovalStatus.APPROVED:
+        if plan.approval_status != SessionApprovalStatus.APPROVED:
             raise HTTPException(status_code=409, detail="Generated plan must be approved before export")
 
         job_id = STORE.next_uuid()

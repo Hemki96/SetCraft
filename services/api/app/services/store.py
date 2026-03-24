@@ -6,11 +6,11 @@ from threading import Lock
 from uuid import UUID, uuid4
 
 from training_plan_schemas.domain_v1 import (
-    ApprovalStatus,
     GeneratedPlan,
     PlanType,
-    ReviewStatus,
+    SessionApprovalStatus,
     SessionBlock,
+    SessionReviewStatus,
     SourceFile,
     TrainingSession,
     TrainingSet,
@@ -90,8 +90,8 @@ def seed_placeholder_data() -> None:
             id=UUID("11111111-1111-1111-1111-111111111111"),
             source_file_id=UUID("22222222-2222-2222-2222-222222222222"),
             title="Scaffold Session Placeholder",
-            review_status=ReviewStatus.NEEDS_REVIEW,
-            approval_status=ApprovalStatus.PENDING,
+            review_status=SessionReviewStatus.PENDING_REVIEW,
+            approval_status=SessionApprovalStatus.NOT_SUBMITTED,
             total_distance_m=1600,
             duration_min=45,
             blocks=[
@@ -119,8 +119,8 @@ def seed_placeholder_data() -> None:
         approved_plan = GeneratedPlan(
             id=UUID("44444444-4444-4444-4444-444444444444"),
             plan_type=PlanType.SESSION_PLAN,
-            review_status=ReviewStatus.REVIEWED,
-            approval_status=ApprovalStatus.APPROVED,
+            review_status=SessionReviewStatus.REVIEWED_OK,
+            approval_status=SessionApprovalStatus.APPROVED,
             content_snapshot={
                 "title": "Approved Sprint Session",
                 "blocks": ["Warmup", "Main", "Cooldown"],
@@ -129,8 +129,8 @@ def seed_placeholder_data() -> None:
         pending_plan = GeneratedPlan(
             id=UUID("55555555-5555-5555-5555-555555555555"),
             plan_type=PlanType.WEEK_PLAN,
-            review_status=ReviewStatus.REVIEWED,
-            approval_status=ApprovalStatus.PENDING,
+            review_status=SessionReviewStatus.REVIEWED_OK,
+            approval_status=SessionApprovalStatus.NOT_SUBMITTED,
             content_snapshot={"title": "Pending Week Plan"},
         )
 
