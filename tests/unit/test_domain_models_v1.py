@@ -49,3 +49,23 @@ def test_generated_plan_approval_requires_review() -> None:
                 "approval_status": ApprovalStatus.APPROVED,
             }
         )
+
+
+def test_training_session_extraction_confidence_must_be_between_zero_and_one() -> None:
+    with pytest.raises(ValidationError):
+        TrainingSession.model_validate(
+            {
+                "source_file_id": str(uuid4()),
+                "extraction_confidence": 1.2,
+            }
+        )
+
+
+def test_source_file_accepts_valid_extraction_confidence() -> None:
+    source = SourceFile.model_validate(
+        {
+            "source_type": "text",
+            "extraction_confidence": 0.67,
+        }
+    )
+    assert source.extraction_confidence == pytest.approx(0.67)

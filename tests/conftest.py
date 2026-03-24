@@ -3,11 +3,24 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 API_ROOT = REPO_ROOT / "services" / "api"
 SCHEMA_ROOT = REPO_ROOT / "packages" / "schemas" / "python"
 
-for candidate in (API_ROOT, SCHEMA_ROOT):
+for candidate in (REPO_ROOT, API_ROOT, SCHEMA_ROOT):
     candidate_str = str(candidate)
     if candidate_str not in sys.path:
         sys.path.insert(0, candidate_str)
+
+
+@pytest.fixture(autouse=True)
+def reset_runtime_store() -> None:
+    from app.services.store import reset_store, seed_placeholder_data
+
+    reset_store()
+    seed_placeholder_data()
+    yield
+    reset_store()
+    seed_placeholder_data()

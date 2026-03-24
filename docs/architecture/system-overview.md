@@ -62,3 +62,11 @@ Verantwortlich für relationale Speicherung, Auditierbarkeit und Vektorspeicheru
 
 ### 10. Background Worker
 Verantwortlich für asynchrone Verarbeitung, Extraktion, Embeddings, Generierung und Exportjobs.
+
+## Architektur-Baselines (ADR-Verweise)
+
+- Backend-Framework: `ADR 0001 – FastAPI`
+- Primäre Datenbank: `ADR 0002 – PostgreSQL`
+- Lokales Modell-Gateway: `ADR 0003 – Ollama`
+- Frontend: `ADR 0004 – React + TypeScript`
+- Semantische Retrieval-Strategie: `ADR 0005 – Hybrid mit pgvector`

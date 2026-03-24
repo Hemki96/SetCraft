@@ -7,8 +7,8 @@ Create Date: 2026-03-19 22:00:00
 
 from __future__ import annotations
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
@@ -41,6 +41,11 @@ def upgrade() -> None:
         sa.Column("details_json", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
+        sa.CheckConstraint(
+            "source_status IN ('uploaded', 'queued', 'extracting', 'extracted', "
+            "'normalizing', 'needs_review', 'approved', 'rejected', 'failed')",
+            name="ck_source_files_source_status_allowed_values",
+        ),
     )
 
     op.create_table(
@@ -59,8 +64,22 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
         sa.ForeignKeyConstraint(["source_file_id"], ["source_files.id"], ondelete="RESTRICT"),
-        sa.CheckConstraint("total_distance_m >= 0", name="ck_training_sessions_total_distance_m_non_negative"),
-        sa.CheckConstraint("duration_min >= 0", name="ck_training_sessions_duration_min_non_negative"),
+        sa.CheckConstraint(
+            "total_distance_m >= 0",
+            name="ck_training_sessions_total_distance_m_non_negative",
+        ),
+        sa.CheckConstraint(
+            "duration_min >= 0",
+            name="ck_training_sessions_duration_min_non_negative",
+        ),
+        sa.CheckConstraint(
+            "review_status IN ('needs_review', 'reviewed', 'corrected')",
+            name="ck_training_sessions_training_session_review_status_allowed_values",
+        ),
+        sa.CheckConstraint(
+            "approval_status IN ('pending', 'approved', 'rejected')",
+            name="ck_training_sessions_training_session_approval_status_allowed_values",
+        ),
     )
 
     op.create_table(
@@ -75,7 +94,11 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
         sa.ForeignKeyConstraint(["session_id"], ["training_sessions.id"], ondelete="CASCADE"),
-        sa.UniqueConstraint("session_id", "order_index", name="uq_session_blocks_session_id_order_index"),
+        sa.UniqueConstraint(
+            "session_id",
+            "order_index",
+            name="uq_session_blocks_session_id_order_index",
+        ),
         sa.CheckConstraint("order_index >= 0", name="ck_session_blocks_order_index_non_negative"),
     )
 
@@ -95,8 +118,15 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
         sa.ForeignKeyConstraint(["block_id"], ["session_blocks.id"], ondelete="CASCADE"),
-        sa.UniqueConstraint("block_id", "order_index", name="uq_training_sets_block_id_order_index"),
-        sa.CheckConstraint("order_index >= 0", name="ck_training_sets_set_order_index_non_negative"),
+        sa.UniqueConstraint(
+            "block_id",
+            "order_index",
+            name="uq_training_sets_block_id_order_index",
+        ),
+        sa.CheckConstraint(
+            "order_index >= 0",
+            name="ck_training_sets_set_order_index_non_negative",
+        ),
         sa.CheckConstraint("distance_m >= 0", name="ck_training_sets_distance_m_non_negative"),
         sa.CheckConstraint("duration_sec >= 0", name="ck_training_sets_duration_sec_non_negative"),
     )
@@ -114,7 +144,18 @@ def upgrade() -> None:
         sa.Column("details_json", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
-        sa.CheckConstraint("is_generated = true", name="ck_generated_plans_generated_plan_is_generated_true"),
+        sa.CheckConstraint(
+            "is_generated = true",
+            name="ck_generated_plans_generated_plan_is_generated_true",
+        ),
+        sa.CheckConstraint(
+            "review_status IN ('needs_review', 'reviewed', 'corrected')",
+            name="ck_generated_plans_generated_plan_review_status_allowed_values",
+        ),
+        sa.CheckConstraint(
+            "approval_status IN ('pending', 'approved', 'rejected')",
+            name="ck_generated_plans_generated_plan_approval_status_allowed_values",
+        ),
     )
 
     op.create_table(

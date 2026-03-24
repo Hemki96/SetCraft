@@ -1,6 +1,13 @@
 from __future__ import annotations
 
+from enum import StrEnum
+
 from pydantic import BaseModel, ConfigDict, Field
+
+
+class UserRole(StrEnum):
+    ADMIN = "admin"
+    TRAINER = "trainer"
 
 
 class LoginRequest(BaseModel):
@@ -16,6 +23,7 @@ class LoginResponse(BaseModel):
     access_token: str
     token_type: str
     expires_in: int = Field(ge=1)
+    role: UserRole
 
 
 class UserMeResponse(BaseModel):
@@ -23,4 +31,4 @@ class UserMeResponse(BaseModel):
 
     user_id: str
     email: str
-    role: str
+    role: UserRole

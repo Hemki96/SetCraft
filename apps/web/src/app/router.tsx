@@ -1,6 +1,8 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import { AppShell } from "../layout/AppShell";
+import { ApprovalScreen } from "../pages/ApprovalScreen";
 import { DashboardScreen } from "../pages/DashboardScreen";
+import { ExportScreen } from "../pages/ExportScreen";
 import { GenerateScreen } from "../pages/GenerateScreen";
 import { LoginScreen } from "../pages/LoginScreen";
 import { SessionsScreen } from "../pages/SessionsScreen";
@@ -16,7 +18,9 @@ export const appRouter = createBrowserRouter([
       { path: "dashboard", element: <DashboardScreen /> },
       { path: "sources", element: <SourcesScreen /> },
       { path: "sessions", element: <SessionsScreen /> },
+      { path: "approvals", element: <ApprovalScreen /> },
       { path: "generate", element: <GenerateScreen /> },
+      { path: "exports", element: <ExportScreen /> },
       { path: "*", element: <Navigate to="/dashboard" replace /> },
     ],
   },

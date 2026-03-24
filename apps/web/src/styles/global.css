@@ -119,6 +119,97 @@ body {
   padding-left: 1.2rem;
 }
 
+.form-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.form-grid label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.form-grid textarea,
+.form-grid input,
+.form-grid select,
+.inline-form input {
+  border: 1px solid #bfd3ce;
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+  width: 100%;
+}
+
+button {
+  border: 1px solid #89b3aa;
+  border-radius: 0.45rem;
+  background: #d8ebe7;
+  color: #123f37;
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inline-form input {
+  max-width: 10rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #d8e4e2;
+  text-align: left;
+  padding: 0.45rem;
+}
+
+.item-card {
+  border: 1px solid #d8e4e2;
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+  margin-top: 0.65rem;
+}
+
+.item-card h4,
+.item-card p {
+  margin: 0.2rem 0;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.5rem;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+}
+
+.error-text {
+  color: #9a2727;
+  margin-top: 0.6rem;
+}
+
 @media (max-width: 720px) {
   .app-header {
     padding: 1rem 1rem 0.5rem;
@@ -131,4 +222,97 @@ body {
   .content-shell {
     padding: 1rem;
   }
+}
+
+.sessions-screen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 1rem;
+}
+
+.sessions-search-form,
+.editor-form {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.sessions-search-form {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  align-items: end;
+}
+
+.sessions-search-form label,
+.editor-form label,
+.review-actions label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: #384954;
+}
+
+.sessions-search-form input,
+.editor-form input,
+.editor-form select,
+.editor-form textarea,
+.review-actions input {
+  border: 1px solid #bfd3ce;
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+}
+
+.sessions-search-form button,
+.editor-form button,
+.review-action-buttons button,
+.session-result-button {
+  border: 1px solid #94b4ad;
+  background: #e6f3f0;
+  color: #163b35;
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.7rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.session-results {
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.session-result-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  background: #f6fbfa;
+}
+
+.session-result-button small {
+  color: #536773;
+}
+
+.session-result-button-active {
+  background: #d6ece7;
+  border-color: #7ba59b;
+}
+
+.review-actions {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.review-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.error-text {
+  color: #8c2331;
+  font-weight: 600;
 }

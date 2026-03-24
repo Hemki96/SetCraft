@@ -18,6 +18,7 @@ Minimales FastAPI-Scaffold fuer den Backend-Strang.
 - `POST /api/v1/auth/login` (Placeholder)
 - `GET /api/v1/auth/me` (Placeholder)
 - `POST /api/v1/sources` (Placeholder)
+- `POST /api/v1/sources/upload` (Byte-Upload mit Validierung und Traceability)
 - `GET /api/v1/sources` (Placeholder)
 - `GET /api/v1/sources/{sourceId}` (Placeholder)
 - `POST /api/v1/sources/{sourceId}/reprocess` (Placeholder)
@@ -26,3 +27,8 @@ Minimales FastAPI-Scaffold fuer den Backend-Strang.
 - `GET /api/v1/retrieval/search` (Placeholder)
 
 Diese Endpunkte liefern bewusst nur einen stabilen API-Rahmen ohne fachliche Business-Logik.
+
+## Upload-Konfiguration
+
+- `SOURCE_UPLOAD_DIR` - Root-Verzeichnis fuer sichere Source-Ablage
+- `SOURCE_UPLOAD_MAX_BYTES` - Harte Obergrenze pro Upload (Bytes)

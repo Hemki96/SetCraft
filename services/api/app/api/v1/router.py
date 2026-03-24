@@ -3,6 +3,8 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.api.v1.endpoints.auth import router as auth_router
+from app.api.v1.endpoints.exports import router as exports_router
+from app.api.v1.endpoints.generation import router as generation_router
 from app.api.v1.endpoints.health import router as health_router
 from app.api.v1.endpoints.retrieval import router as retrieval_router
 from app.api.v1.endpoints.sessions import router as sessions_router
@@ -14,3 +16,5 @@ v1_router.include_router(health_router, prefix="/health", tags=["health"])
 v1_router.include_router(sources_router, prefix="/sources", tags=["sources"])
 v1_router.include_router(sessions_router, prefix="/sessions", tags=["sessions"])
 v1_router.include_router(retrieval_router, prefix="/retrieval", tags=["retrieval"])
+v1_router.include_router(generation_router, prefix="/generation", tags=["generation"])
+v1_router.include_router(exports_router, prefix="/exports", tags=["exports"])

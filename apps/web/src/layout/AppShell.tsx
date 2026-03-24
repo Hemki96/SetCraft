@@ -5,7 +5,9 @@ const PRIMARY_NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard" },
   { to: "/sources", label: "Sources" },
   { to: "/sessions", label: "Sessions" },
+  { to: "/approvals", label: "Approvals" },
   { to: "/generate", label: "Generate" },
+  { to: "/exports", label: "Exports" },
 ] as const;
 
 const STATUS_HINTS = [

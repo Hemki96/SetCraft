@@ -6,11 +6,6 @@ from pathlib import Path
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import create_engine, inspect
-from sqlalchemy.engine import Engine
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
-
 from app.infra.db.models import (
     GeneratedPlanORM,
     SessionBlockORM,
@@ -19,6 +14,10 @@ from app.infra.db.models import (
     TrainingSetORM,
     ValidationResultORM,
 )
+from sqlalchemy import create_engine, inspect
+from sqlalchemy.engine import Engine
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 EXPECTED_TABLES = {
     "source_files",
@@ -94,6 +93,18 @@ def test_core_entities_can_be_persisted_and_generated_marker_is_enforced(
     with Session(migrated_engine) as session:
         violating_plan = GeneratedPlanORM(plan_type="session_plan", is_generated=False)
         session.add(violating_plan)
+        with pytest.raises(IntegrityError):
+            session.flush()
+
+
+def test_source_status_constraint_is_enforced(migrated_engine: Engine) -> None:
+    with Session(migrated_engine) as session:
+        valid_source = SourceFileORM(source_type="text", source_status="uploaded")
+        session.add(valid_source)
+        session.flush()
+
+        invalid_source = SourceFileORM(source_type="text", source_status="invalid_status")
+        session.add(invalid_source)
         with pytest.raises(IntegrityError):
             session.flush()
 

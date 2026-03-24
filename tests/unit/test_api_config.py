@@ -15,6 +15,8 @@ def test_settings_use_defaults_when_env_is_missing(monkeypatch: pytest.MonkeyPat
     monkeypatch.delenv("POSTGRES_PASSWORD", raising=False)
     monkeypatch.delenv("POSTGRES_HOST", raising=False)
     monkeypatch.delenv("POSTGRES_PORT", raising=False)
+    monkeypatch.delenv("SOURCE_UPLOAD_DIR", raising=False)
+    monkeypatch.delenv("SOURCE_UPLOAD_MAX_BYTES", raising=False)
 
     get_settings.cache_clear()
     settings = get_settings()
@@ -27,6 +29,8 @@ def test_settings_use_defaults_when_env_is_missing(monkeypatch: pytest.MonkeyPat
         settings.database_url
         == "postgresql+psycopg://postgres:postgres@localhost:5432/training_plan_platform"
     )
+    assert settings.source_upload_dir == "var/uploads/sources"
+    assert settings.source_upload_max_bytes == 10 * 1024 * 1024
 
 
 def test_settings_read_environment_values(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -39,6 +43,8 @@ def test_settings_read_environment_values(monkeypatch: pytest.MonkeyPatch) -> No
     monkeypatch.setenv("POSTGRES_PASSWORD", "secret")
     monkeypatch.setenv("POSTGRES_HOST", "db")
     monkeypatch.setenv("POSTGRES_PORT", "5433")
+    monkeypatch.setenv("SOURCE_UPLOAD_DIR", "/tmp/setcraft-upload")
+    monkeypatch.setenv("SOURCE_UPLOAD_MAX_BYTES", "1024")
 
     get_settings.cache_clear()
     settings = get_settings()
@@ -48,6 +54,8 @@ def test_settings_read_environment_values(monkeypatch: pytest.MonkeyPatch) -> No
     assert settings.environment == "test"
     assert settings.debug is True
     assert settings.database_url == "postgresql+psycopg://setcraft_user:secret@db:5433/setcraft"
+    assert settings.source_upload_dir == "/tmp/setcraft-upload"
+    assert settings.source_upload_max_bytes == 1024
 
 
 def test_database_url_prefers_explicit_value(monkeypatch: pytest.MonkeyPatch) -> None:

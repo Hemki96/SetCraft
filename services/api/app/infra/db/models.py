@@ -17,7 +17,8 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
 )
-from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.infra.db.base import Base
@@ -47,8 +48,19 @@ class ApprovalStatus(StrEnum):
     REJECTED = "rejected"
 
 
+SOURCE_STATUS_VALUES = tuple(status.value for status in SourceStatus)
+REVIEW_STATUS_VALUES = tuple(status.value for status in ReviewStatus)
+APPROVAL_STATUS_VALUES = tuple(status.value for status in ApprovalStatus)
+
+
 class SourceFileORM(Base):
     __tablename__ = "source_files"
+    __table_args__ = (
+        CheckConstraint(
+            f"source_status IN {SOURCE_STATUS_VALUES}",
+            name="source_status_allowed_values",
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid4)
     source_type: Mapped[str] = mapped_column(String(16), nullable=False)
@@ -79,6 +91,14 @@ class TrainingSessionORM(Base):
     __table_args__ = (
         CheckConstraint("total_distance_m >= 0", name="total_distance_m_non_negative"),
         CheckConstraint("duration_min >= 0", name="duration_min_non_negative"),
+        CheckConstraint(
+            f"review_status IN {REVIEW_STATUS_VALUES}",
+            name="training_session_review_status_allowed_values",
+        ),
+        CheckConstraint(
+            f"approval_status IN {APPROVAL_STATUS_VALUES}",
+            name="training_session_approval_status_allowed_values",
+        ),
     )
 
     id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid4)
@@ -195,6 +215,14 @@ class GeneratedPlanORM(Base):
     __tablename__ = "generated_plans"
     __table_args__ = (
         CheckConstraint("is_generated = true", name="generated_plan_is_generated_true"),
+        CheckConstraint(
+            f"review_status IN {REVIEW_STATUS_VALUES}",
+            name="generated_plan_review_status_allowed_values",
+        ),
+        CheckConstraint(
+            f"approval_status IN {APPROVAL_STATUS_VALUES}",
+            name="generated_plan_approval_status_allowed_values",
+        ),
     )
 
     id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid4)

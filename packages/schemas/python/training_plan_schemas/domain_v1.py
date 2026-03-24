@@ -74,6 +74,7 @@ class SourceFile(StrictSchema):
     source_status: SourceStatus = SourceStatus.UPLOADED
     ingested_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     raw_text: str | None = None
+    extraction_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     details_json: dict[str, object] = Field(default_factory=dict)
 
 
@@ -85,6 +86,7 @@ class TrainingSet(StrictSchema):
     duration_sec: int | None = Field(default=None, ge=0)
     intensity_note: str | None = None
     raw_snapshot: dict[str, object] = Field(default_factory=dict)
+    extraction_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     normalized_notes: str | None = None
     tags: list[str] = Field(default_factory=list)
     details_json: dict[str, object] = Field(default_factory=dict)
@@ -97,6 +99,7 @@ class SessionBlock(StrictSchema):
     block_type: str | None = None
     sets: list[TrainingSet] = Field(default_factory=list)
     raw_snapshot: dict[str, object] = Field(default_factory=dict)
+    extraction_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     details_json: dict[str, object] = Field(default_factory=dict)
 
 
@@ -110,6 +113,7 @@ class TrainingSession(StrictSchema):
     duration_min: int | None = Field(default=None, ge=0)
     blocks: list[SessionBlock] = Field(default_factory=list)
     raw_snapshot: dict[str, object] = Field(default_factory=dict)
+    extraction_confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     tags: list[str] = Field(default_factory=list)
     notes: str | None = None
     details_json: dict[str, object] = Field(default_factory=dict)
@@ -136,6 +140,7 @@ class ValidationResult(StrictSchema):
     rule_code: str
     message: str
     field_path: str | None = None
+    confidence: float | None = Field(default=None, ge=0.0, le=1.0)
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     details_json: dict[str, object] = Field(default_factory=dict)
 

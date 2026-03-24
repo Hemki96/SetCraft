@@ -21,6 +21,8 @@ class Settings(BaseModel):
     postgres_host: str = Field(default="localhost")
     postgres_port: int = Field(default=5432)
     database_url: str
+    source_upload_dir: str = Field(default="var/uploads/sources")
+    source_upload_max_bytes: int = Field(default=10 * 1024 * 1024)
 
 
 def _build_database_url() -> str:
@@ -49,4 +51,8 @@ def get_settings() -> Settings:
         postgres_host=os.getenv("POSTGRES_HOST", "localhost"),
         postgres_port=int(os.getenv("POSTGRES_PORT", "5432")),
         database_url=_build_database_url(),
+        source_upload_dir=os.getenv("SOURCE_UPLOAD_DIR", "var/uploads/sources"),
+        source_upload_max_bytes=int(
+            os.getenv("SOURCE_UPLOAD_MAX_BYTES", str(10 * 1024 * 1024))
+        ),
     )

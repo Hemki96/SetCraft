@@ -4,10 +4,10 @@ export function LoginScreen(): JSX.Element {
   return (
     <PlaceholderScreen
       title="Login"
-      summary="Authentifizierungseinstieg als Platzhalter ohne aktive Session-Logik."
+      summary="Authentifizierungseinstieg mit Rollenmodell v1 (Admin/Trainer)."
       scopeItems={[
         "Anmeldeformular (MVP)",
-        "Rollenbasierte Weiterleitung",
+        "Rollenbasierte Weiterleitung (admin/trainer)",
         "Session-Status und Fehlermeldungen",
       ]}
     />
